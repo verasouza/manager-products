@@ -1,9 +1,10 @@
 package com.vsouza.managerproducts.dto.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @EqualsAndHashCode @ToString
 @Entity
 @Table(name = "products")
 public class Product {

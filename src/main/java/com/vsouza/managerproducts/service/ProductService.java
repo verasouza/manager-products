@@ -2,8 +2,7 @@ package com.vsouza.managerproducts.service;
 
 import com.vsouza.managerproducts.dto.entities.Product;
 import com.vsouza.managerproducts.dto.mappers.ProductMapper;
-import com.vsouza.managerproducts.dto.models.ProductRequest;
-import com.vsouza.managerproducts.dto.models.ProductResponse;
+import com.vsouza.managerproducts.dto.models.ProductDTO;
 import com.vsouza.managerproducts.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,29 +19,29 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public Set<ProductResponse> getAllProducts() {
+    public Set<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
-        return products.stream().map(productMapper::toProductResponse).collect(Collectors.toSet());
+        return products.stream().map(productMapper::toProductDTO).collect(Collectors.toSet());
     }
 
-    public ProductResponse getProductById(Long id) {
+    public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductDTO(product);
     }
 
-    public ProductResponse addProduct(ProductRequest productRequest) {
-        Product product = productMapper.toProduct(productRequest);
+    public ProductDTO addProduct(ProductDTO productDTO) {
+        Product product = productMapper.toProduct(productDTO);
         productRepository.save(product);
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductDTO(product);
     }
 
-    public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id).orElse(null);
-        product.setName(productRequest.getName());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
         productRepository.save(product);
-        return productMapper.toProductResponse(product);
+        return productMapper.toProductDTO(product);
     }
 
     public void deleteProduct(Long id) {
