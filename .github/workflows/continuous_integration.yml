@@ -1,0 +1,28 @@
+name: CI Testes
+
+on:
+  push:
+    branches:
+      - exercicio-2-testes
+
+jobs:
+  BuildAndTestApplication:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with maven
+        run: mvn -B package --file pom.xml
