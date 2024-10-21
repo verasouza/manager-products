@@ -3,6 +3,7 @@ package com.vsouza.managerproducts;
 import com.vsouza.managerproducts.dto.entities.Product;
 import com.vsouza.managerproducts.dto.mappers.ProductMapper;
 import com.vsouza.managerproducts.dto.models.ProductDTO;
+import com.vsouza.managerproducts.queues.MessageFacade;
 import com.vsouza.managerproducts.repositories.ProductRepository;
 import com.vsouza.managerproducts.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +30,9 @@ public class ProductServiceTest {
     @Mock
     private ProductMapper productMapper;
 
+    @Mock
+    private MessageFacade messageFacade;
+
     @InjectMocks
     private ProductService productService;
 
@@ -37,15 +43,22 @@ public class ProductServiceTest {
 
     @Test
     void saveProduct_shouldReturnSavedProduct(){
-        Product productRequest = new Product();
-        productRequest.setName("Ipad");
-        productRequest.setPrice(5.000);
-        productRequest.setDescription("Tablet da Apple");
+        Product productRequest = Product.builder()
+                .name("Ipad")
+                .description("Tablet da Apple")
+                .price(5.000)
+                .createdAt(LocalDate.now())
+                .updatedAt(LocalDate.now())
+                .build();
 
-        Product productResponse = new Product();
-        productResponse.setName("Ipad");
-        productResponse.setPrice(5.000);
-        productResponse.setDescription("Tablet da Apple");
+
+        Product productResponse = Product.builder()
+                .name("Ipad")
+                .price(5.000)
+                .description("Tablet da Apple")
+                .createdAt(LocalDate.now())
+                .updatedAt(LocalDate.now())
+                .build();
 
         ProductDTO request = getProductDTO(productRequest);
         ProductDTO response = getProductDTO(productResponse);
@@ -95,8 +108,8 @@ public class ProductServiceTest {
     @Test
     void getAllProducts_shouldReturnAllProducts(){
         List<Product> productList = new ArrayList<>();
-        productList.add(new Product(1L, "Ipad", "Tablet da Apple", 5.000));
-        productList.add(new Product(2L, "TV", "TV QLED 50 polegadas", 5.000));
+        productList.add(new Product(1L, "Ipad", "Tablet da Apple", 5.000, LocalDate.now(), LocalDate.now()));
+        productList.add(new Product(2L, "TV", "TV QLED 50 polegadas", 5.000, LocalDate.now(), LocalDate.now()));
 
         Set<ProductDTO> productListDTO = new HashSet<>();
         productListDTO.add(new ProductDTO(1L, "Ipad", "Tablet da Apple", 5.000));

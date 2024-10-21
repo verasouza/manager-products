@@ -3,6 +3,10 @@ package com.vsouza.managerproducts.dto.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Builder
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode @ToString
 @Entity
@@ -16,6 +20,10 @@ public class Product {
     private String name;
     private String description;
     private Double price;
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 
 
 }
