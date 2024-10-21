@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: 'rabbitmq:4.0-management'
+    container_name: RABBITMQ
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+    env_file:
+      - .env
+    networks:
+      - local-network
+    privileged: true
+    environment:
+      - DEFAULT_USER=${RABBITMQ_USERNAME}
+      - DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PWD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PWD}
+    restart: unless-stopped
+    networks:
+      - local-network
+
+  managerproducts:
+    container_name: MANAGER_PRODUCTS
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    networks:
+      - local-network
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - mysql
+
+networks:
+  local-network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
+  mysql_data:
