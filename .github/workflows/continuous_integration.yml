@@ -3,7 +3,7 @@ name: CI Testes
 on:
   push:
     branches:
-      - exercicio-2-testes
+      - develop
 
 jobs:
   BuildAndTestApplication:
